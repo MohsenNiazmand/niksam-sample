@@ -108,7 +108,7 @@ Dependency rule: `presentation → domain ← data`. `domain` imports nothing fr
 | [x] | P3 Atomic repository + tests (riskiest) | 22 min | 1 |
 | [x] | P4 TaskListBloc + tests | 22 min | 1 |
 | [x] | P5 Form + Timeline cubits + tests | 12 min | 1 |
-| [ ] | P6 UI wiring | 22 min | 1 |
+| [x] | P6 UI wiring | 22 min | 1 |
 | [ ] | P7 Integration tests + manual verification + fixes | 10 min | 1+ |
 | [ ] | P8 Docs: DESIGN, README, AI_WORKFLOW (weights 40% total!) | 45 min | 3 |
 | [ ] | P9 Final gate + end time | 12 min | 1 |
