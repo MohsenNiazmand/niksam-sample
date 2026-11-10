@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'core/constants/app_constants.dart';
 import 'core/theme/app_theme.dart';
-import 'features/home/presentation/pages/home_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,11 +7,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppConstants.appName,
+      title: 'Niksam',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: const HomePage(),
+      home: const Scaffold(
+        body: Center(
+          child: Text('Niksam'),
+        ),
+      ),
     );
   }
 }

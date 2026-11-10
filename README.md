@@ -1,17 +1,12 @@
-# niksam
+# Niksam — Offline Task Manager
 
-A new Flutter project.
+Offline Flutter task manager with full event history, atomic transactions, and write failure simulation.
 
-## Getting Started
+- **Started:** 2026-11-10T06:27:00-05:00
+- **Finished:** 
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Documentation
+- [PLAN.md](PLAN.md) — Phased implementation plan and progress tracker
+- [CLAUDE.md](CLAUDE.md) — Architecture and development rules
+- [AI_WORKFLOW.md](AI_WORKFLOW.md) — AI workflow, prompts, verification and running log
+- [DESIGN.md](DESIGN.md) — System architecture, atomicity and decisions (Phase 8)
