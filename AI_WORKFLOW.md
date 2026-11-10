@@ -1,80 +1,33 @@
-# AI Workflow & Engineering Audit
+# AI Workflow
 
 ## Tools
-- **Agent:** Google Antigravity / Claude Code
-- **Model:** Gemini 3.8 Flash / Claude 3.5 Sonnet
-- **IDE:** VS Code / Linux x86_64
+- Claude Code (VS Code extension) on Linux; Flutter 3.44.6. The Claude model varied between sessions (implementation session and a later independent review session).
 
----
+## How I split the work
+- **Plan first:** I gave the assignment to the AI and had it write `PLAN.md` (decision log, 10 phases, exact commit messages, handoff protocol) and `CLAUDE.md` (rules) *before* any code. Any agent can resume from the first unchecked phase.
+- **One phase per prompt, one commit per phase;** each phase gates on `flutter analyze` (strict mode) + `flutter test`.
+- **Riskiest first:** pure domain logic and the atomic SQLite repository (rollback, idempotency, cascade) were built and tested before bloc and UI.
+- **Independent review pass:** after the implementation I asked the AI to review the whole project against the assignment; it produced `REVIEW_FIXES.md`, which was executed as phases F1–F5.
 
-## How I Split the Work
-- **Strict Plan-First Approach**: Analyzed requirements into 10 deterministic phases (`PLAN.md`), ordered from low-dependency domain logic to atomic persistence, state management, and UI.
-- **Micro-Commit Discipline**: Exactly one commit per phase with clear imperative messages. No rebasing or history squashing.
-- **Riskiest First**: Started with pure domain algorithms (`TaskChangeDetector`, `TaskValidator`) and transactional rollback tests in SQLite before building presentation layers.
-- **Zero-Tolerance Quality Gate**: Every phase required passing `flutter analyze` (with `strict-casts`, `strict-inference`, and `strict-raw-types` enabled) and `flutter test` before committing.
+## Key prompts
+1. *"This is a raw Flutter project … based on the email, create an md file with development phases, exact implementation steps, and an English commit message per phase so another AI agent can continue."* → `PLAN.md`
+2. *"Read PLAN.md and CLAUDE.md, start from the first phase, implement the tasks and commit every phase."* (original: Persian)
+3. *"Review the whole project and write everything that needs fixing or improving into an md file I can give to an AI agent."* → `REVIEW_FIXES.md`
 
----
+## Where the AI was wrong (found by the review pass, fixed in later commits)
+1. **Fault counter race (`b840948`).** `FAIL_FIRST_WRITES=N` used one shared counter read at checkpoint time; with two concurrent writes and N=1, *no* write failed. All tests were green because they used a different test injector and `ConfiguredFault` (the real one) had no tests. Caught by reading the code and a throw-away probe test; fixed with per-operation `WriteAttempt` + tests.
+2. **Duplicate error SnackBars (`c69289d`).** The form's `BlocListener` had no `listenWhen`, so after a failed save every priority change re-showed the error. Caught by reading; regression widget test added.
+3. **Emit after close / notify after dispose (`c69289d`, `e4e69f4`).** Cubits emitted after `await` without `isClosed` checks, and the repository pushed to a closed `changes` controller after commit (could report a committed write as failed). Caught by reading; guards added.
+4. **Raw exception text in the UI (`e4e69f4`).** `StorageFailure(error.toString())` leaked `DatabaseException(...)` to users; now friendly messages, details logged.
 
-## Key Prompts Used
-1. *"این یک پروژه ی خام هست، فایل های Plan.md و claude.md رو بررسی کن و سپس از مرحله نخست شروع کن به پیاده سازی تسک ها و هر فاز رو که پیاده سازی کردی کامیت کن"*
-2. *"Execute Phase 1: Pure Dart domain model and change detector tests."*
-3. *"Execute Phase 2: SQLite schema, versioned migrations, and write fault injector."*
-4. *"Execute Phase 3: Transactional atomic repository with mid-write rollback and idempotency."*
-5. *"Execute Phase 4: TaskListBloc with debounced restartable search and sequential mutation transformers."*
+## What I verified myself
+Pending — to be filled only with what I personally checked on a device (see the manual checklist in `PLAN.md` P7):
+- [ ] Persistence after kill/relaunch
+- [ ] `FAIL_WRITES=true`: errors shown, list unchanged, no partial data after relaunch
+- [ ] `FAIL_FIRST_WRITES=1`: Retry succeeds with exactly one event
+- [ ] 10 rapid Complete taps → one `Completed` event
+- [ ] Fast typing + combined filters preserved after an edit
 
----
+Automated evidence (not manual): 62 tests incl. real-SQLite rollback, no-op `total_changes()`, concurrency, stale-query and integration tests.
 
-## Where the AI Was Wrong (Real Audit Log)
-
-1. **Relative Path Depth Miscalculation (Phase 2)**:
-   - **What happened:** In `lib/features/tasks/data/fault/write_fault_injector.dart`, the relative import to `app_config.dart` was written as `../../../core/config/app_config.dart` (3 levels up instead of 4).
-   - **How it was caught:** Caught immediately by `flutter analyze` (`uri_does_not_exist`).
-   - **Fix:** Switched relative imports to standardized `package:niksam/...` imports.
-2. **Missing Type Annotation under Strict Inference (Phase 5)**:
-   - **What happened:** In `test/features/tasks/presentation/form/task_form_cubit_test.dart`, a test double method signature used `dynamic draft` instead of `TaskDraft draft`.
-   - **How it was caught:** The strict analyzer flagged `argument_type_not_assignable` because `strict-inference` is enforced in `analysis_options.yaml`.
-   - **Fix:** Replaced `dynamic` with explicit `TaskDraft draft`.
-3. **Widget Subdirectory Path Inconsistency (Phase 6)**:
-   - **What happened:** In `lib/features/tasks/presentation/list/view/widgets/filter_bar.dart`, imports referencing `domain/entities/` used 3 upward directory steps instead of 4.
-   - **How it was caught:** Flagged by `flutter analyze` during Phase 6 verification.
-   - **Fix:** Standardized on `package:niksam/features/...` imports across all UI widgets.
-4. **Shared Mutable State in Write Fault Injector & Test Double in Prod (Phase F1 / Review)**:
-   - **What happened:** `FAIL_FIRST_WRITES=N` used a shared mutable counter read at checkpoint time, causing race conditions in concurrent writes and consuming budget on no-op (`Unchanged`) writes. Also, `TestFaultInjector` lived in production `lib/`.
-   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H1 & M1).
-   - **Fix:** Made fault injection per-operation with lazy evaluation on first checkpoint, moved `TestFaultInjector` to `test/support/`, and added robust unit tests for `ConfiguredFault`.
-5. **Repository & Database Hardening (Phase F2 / Review)**:
-   - **What happened:** Raw exception text shown to users (H4); stream notification after close throwing error on successful write (H5); database open future permanently caching failed open (M2); unknown priority silently falling back to medium hiding data corruption (M3); local vs UTC date comparison mismatch (M4); unused delete parameter and redundant checkpoint (M8).
-   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H4, H5, M2, M3, M4, M8).
-   - **Fix:** Added friendly error mapping with diagnostic logging, guarded notifications against closed streams, allowed retrying failed database open, threw `ArgumentError` on unknown priority, enforced UTC dates in repository, and cleaned up delete parameters/checkpoints.
-6. **Presentation Correctness & Async Emits (Phase F3 / Review)**:
-   - **What happened:** Emitting states after cubit was closed in-flight causing unhandled async errors (H3); duplicate error SnackBars on unrelated state changes because `BlocListener` lacked `listenWhen` (H2); retry action offered for missing tasks ("Task no longer exists") which can never succeed (M5); type erasure with `Result<dynamic>` (M6); query active check using untrimmed text (M7).
-   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H2, H3, M5, M6, M7).
-   - **Fix:** Added `isClosed` checks before `emit`, added `listenWhen` and reset error state on title/priority change, made `ActionFailure.retryEvent` nullable and hid retry action for `NotFoundFailure`, replaced `Result<dynamic>` with typed results, and trimmed query text in `isActive`.
-
----
-
-## What I Verified Myself
-- [x] Inspected database rollback behavior: mid-transaction write exceptions leave stored SQLite state unchanged.
-- [x] Verified zero statements executed on identical update (`total_changes()` does not increment).
-- [x] Verified idempotent completions under 10 concurrent requests producing exactly 1 event.
-- [x] Confirmed sequential mutation queue prevents out-of-order writes.
-- [x] Verified that debounced search drops stale in-flight results across query type changes.
-- [x] Verified all controllers and streams are cleaned up in `dispose()` and `close()`.
-
----
-
-## Running Log
-- **P0**: Cleaned sample demo code; added production dependencies; configured strict analysis options; initialized `AI_WORKFLOW.md` and VS Code debug profiles.
-- **P1**: Implemented pure domain entities (`Task`, `TaskEvent`, `TaskDraft`, `TaskQuery`, `WriteOutcome`) and pure algorithms (`TaskChangeDetector`, `TaskValidator`). Passed 17 tests.
-- **P2**: Created SQLite migrations, lazy `AppDatabase`, `TaskModel`, `TaskEventModel`, and `WriteFaultInjector`. Verified foreign keys and CHECK constraints. Passed 25 tests.
-- **P3**: Implemented atomic `TaskRepositoryImpl` and `TaskLocalDataSource`. Verified mid-write rollback, no-op total changes, idempotent concurrent writes, and delete cascade. Passed 36 tests.
-- **P4**: Implemented `TaskListBloc` with debounced restartable search and sequential mutation queue. Verified stale query drops and tokenized action failures. Passed 43 tests.
-- **P5**: Created `TaskFormCubit` and `TaskTimelineCubit`. Verified preassigned UUIDs, duplicate submit guards, and timeline states. Passed 50 tests.
-- **P6**: Wired presentation screens (`TaskListPage`, `TaskFormPage`, `TaskTimelineSheet`). Verified responsive rebuilds and widget smoke tests. Passed 51 tests.
-- **P7**: Added end-to-end integration tests combining real SQLite with BLoC. Verified rapid taps and fault recovery. Passed 53 tests.
-- **P8**: Produced full architectural design document (`DESIGN.md`), project guide (`README.md`), and finalized AI workflow log (`AI_WORKFLOW.md`).
-- **F1**: Made fault injection per-operation (`WriteAttempt`), moved `TestFaultInjector` to `test/support/`, and added `ConfiguredFault` unit tests. Passed 58 tests.
-- **F2**: Hardened repository error mapping and logging, guarded change notifications against closed streams, enabled database open retry, threw on corrupt priority, enforced UTC dates, and cleaned up delete method. Passed 59 tests.
-- **F3**: Guarded cubit/bloc emits after close, added `listenWhen` to prevent duplicate error snackbars, made action failure retry event nullable (no retry for missing tasks), replaced dynamic results with typed types, and trimmed query text in `isActive`. Passed 59 tests.
-- **F4**: Added comprehensive widget tests for form validation, submission failure flow, single SnackBar retry, no duplicate error snackbars on priority change, and filter-with-no-match empty state. Passed 62 tests.
-- **F5**: Unified package imports across codebase (`always_use_package_imports`), dropped unused `mocktail` and `cupertino_icons` dependencies, updated package description, and renamed `MyApp` to `NiksamApp`. Passed 62 tests.
+Full running log: [docs/ai-running-log.md](docs/ai-running-log.md).
