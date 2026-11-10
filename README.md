@@ -2,9 +2,9 @@
 
 An offline-first Flutter task manager built with SQLite, BLoC pattern, and full activity history. Designed to demonstrate atomic transactions, idempotent operations, and failure simulation with zero data corruption.
 
-- **Started:** 2026-11-10T06:27:00-05:00
-- **Finished:** 2026-11-10T06:49:00-05:00
-- **Total Development Time:** ~22 minutes (well within the 3-hour budget)
+- **Started:** 2026-11-10T06:11:00-05:00
+- **Finished:** 2026-11-10T07:15:00-05:00
+- **Total Development Time:** ~1 hour (including comprehensive review hardening)
 
 ---
 
@@ -19,7 +19,7 @@ An offline-first Flutter task manager built with SQLite, BLoC pattern, and full 
 ## Getting Started
 
 ### Prerequisites
-- **Flutter:** 3.24.x or newer (Dart ^3.5.x)
+- **Flutter:** 3.44.x / Dart ^3.12.2
 - **Platforms:** Linux, macOS, Windows, Android, iOS (**Web is unsupported** due to raw SQLite FFI requirement)
 
 ### Setup & Run Commands
@@ -59,13 +59,12 @@ flutter run --dart-define=FAIL_FIRST_WRITES=1
 | `path` | Cross-platform file path manipulation. |
 | `uuid` | Client-side UUID v4 generation ensuring write idempotency upon failure retries. |
 | `bloc_test` *(dev)* | Deterministic state transition testing for BLoCs and Cubits. |
-| `mocktail` *(dev)* | Null-safe test mocking. |
 
 ---
 
 ## Limitations & Unfinished Scope
 1. **Case-Insensitive Search**: SQLite `LIKE` operator is case-insensitive for ASCII characters only. Unicode full case folding is omitted to avoid external C extensions.
-2. **Device Clock Dependency**: Event ordering relies on the device's UTC clock (`DateTime.now().toUtc()`). Multi-device time drift is addressed conceptually in `DESIGN.md §7`.
-3. **No Pagination**: The task list loads matching tasks for the current query directly from SQLite into memory. Suitable for local personal tasks; cursor pagination would be introduced with remote sync.
+2. **Device Clock Dependency**: Event ordering relies on the device's UTC clock (`DateTime.now().toUtc()`).
+3. **No Pagination**: The task list loads matching tasks for the current query directly from SQLite into memory.
 4. **No Undo on Hard Delete**: Deleted tasks and cascaded timelines are immediately purged from SQLite.
-5. **Web Unsupported**: Requires SQLite C bindings via FFI, which does not run on standard web builds.
+5. **Web Unsupported**: Requires SQLite C bindings via FFI.
