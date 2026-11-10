@@ -8,7 +8,7 @@ enum TaskListStatus { loading, success, failure }
 
 class ActionFailure extends Equatable {
   final String message;
-  final TaskListEvent retryEvent;
+  final TaskListEvent? retryEvent;
   final int token;
 
   const ActionFailure({

@@ -116,7 +116,7 @@ void main() {
 
         // 2. Clear fault and dispatch retryEvent
         faultInjector.failAtCheckpoints.clear();
-        bloc.add(bloc.state.actionFailure!.retryEvent);
+        bloc.add(bloc.state.actionFailure!.retryEvent!);
         await Future<void>.delayed(const Duration(milliseconds: 100));
 
         // Verify it succeeded

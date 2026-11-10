@@ -13,6 +13,8 @@ class TaskTimelineCubit extends Cubit<TaskTimelineState> {
     emit(state.copyWith(status: TimelineStatus.loading));
 
     final result = await _repo.getTimeline(taskId);
+    if (isClosed) return;
+
     switch (result) {
       case Success(:final data):
         emit(

@@ -46,6 +46,10 @@
    - **What happened:** Raw exception text shown to users (H4); stream notification after close throwing error on successful write (H5); database open future permanently caching failed open (M2); unknown priority silently falling back to medium hiding data corruption (M3); local vs UTC date comparison mismatch (M4); unused delete parameter and redundant checkpoint (M8).
    - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H4, H5, M2, M3, M4, M8).
    - **Fix:** Added friendly error mapping with diagnostic logging, guarded notifications against closed streams, allowed retrying failed database open, threw `ArgumentError` on unknown priority, enforced UTC dates in repository, and cleaned up delete parameters/checkpoints.
+6. **Presentation Correctness & Async Emits (Phase F3 / Review)**:
+   - **What happened:** Emitting states after cubit was closed in-flight causing unhandled async errors (H3); duplicate error SnackBars on unrelated state changes because `BlocListener` lacked `listenWhen` (H2); retry action offered for missing tasks ("Task no longer exists") which can never succeed (M5); type erasure with `Result<dynamic>` (M6); query active check using untrimmed text (M7).
+   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H2, H3, M5, M6, M7).
+   - **Fix:** Added `isClosed` checks before `emit`, added `listenWhen` and reset error state on title/priority change, made `ActionFailure.retryEvent` nullable and hid retry action for `NotFoundFailure`, replaced `Result<dynamic>` with typed results, and trimmed query text in `isActive`.
 
 ---
 
@@ -71,3 +75,4 @@
 - **P8**: Produced full architectural design document (`DESIGN.md`), project guide (`README.md`), and finalized AI workflow log (`AI_WORKFLOW.md`).
 - **F1**: Made fault injection per-operation (`WriteAttempt`), moved `TestFaultInjector` to `test/support/`, and added `ConfiguredFault` unit tests. Passed 58 tests.
 - **F2**: Hardened repository error mapping and logging, guarded change notifications against closed streams, enabled database open retry, threw on corrupt priority, enforced UTC dates, and cleaned up delete method. Passed 59 tests.
+- **F3**: Guarded cubit/bloc emits after close, added `listenWhen` to prevent duplicate error snackbars, made action failure retry event nullable (no retry for missing tasks), replaced dynamic results with typed types, and trimmed query text in `isActive`. Passed 59 tests.

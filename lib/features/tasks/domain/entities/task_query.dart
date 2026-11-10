@@ -15,7 +15,9 @@ class TaskQuery extends Equatable {
   });
 
   bool get isActive =>
-      text.isNotEmpty || priority != null || completion != CompletionFilter.all;
+      text.trim().isNotEmpty ||
+      priority != null ||
+      completion != CompletionFilter.all;
 
   TaskQuery copyWith({
     String? text,

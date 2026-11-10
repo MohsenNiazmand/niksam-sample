@@ -69,6 +69,7 @@ class _TaskFormViewState extends State<_TaskFormView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<TaskFormCubit, TaskFormState>(
+      listenWhen: (p, c) => p.status != c.status || p.token != c.token,
       listener: (context, state) {
         if (state.status == FormStatus.success) {
           Navigator.of(context).pop();

@@ -116,14 +116,22 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     TaskMutationRequested event,
     Emitter<TaskListState> emit,
   ) async {
-    final Result<dynamic> result;
-    switch (event) {
-      case TaskCompletionSetRequested(:final id, :final completed):
-        result = await _repo.setCompleted(id, completed);
-      case TaskDeleteRequested(:final id):
-        result = await _repo.delete(id);
+    if (event is TaskCompletionSetRequested) {
+      final result = await _repo.setCompleted(event.id, event.completed);
+      if (isClosed) return;
+      _handleMutationResult(result, event, emit);
+    } else if (event is TaskDeleteRequested) {
+      final result = await _repo.delete(event.id);
+      if (isClosed) return;
+      _handleMutationResult(result, event, emit);
     }
+  }
 
+  void _handleMutationResult(
+    Result<Object?> result,
+    TaskMutationRequested event,
+    Emitter<TaskListState> emit,
+  ) {
     switch (result) {
       case Success():
         emit(state.copyWith(actionFailure: () => null));
@@ -131,16 +139,20 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
         final message = failure is NotFoundFailure
             ? 'Task no longer exists'
             : failure.message;
+        final TaskListEvent? retryEvent =
+            failure is NotFoundFailure ? null : event;
         emit(
           state.copyWith(
             actionFailure: () => ActionFailure(
               message: message,
-              retryEvent: event,
+              retryEvent: retryEvent,
               token: ++_token,
             ),
           ),
         );
-        add(const TaskListReloadRequested());
+        if (retryEvent != null) {
+          add(const TaskListReloadRequested());
+        }
     }
   }
 

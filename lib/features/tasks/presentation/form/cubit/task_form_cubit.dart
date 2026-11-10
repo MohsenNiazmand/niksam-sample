@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../domain/entities/priority.dart';
 import '../../../domain/entities/task.dart';
 import '../../../domain/entities/task_draft.dart';
+import '../../../domain/entities/write_outcome.dart';
 import '../../../domain/logic/task_validator.dart';
 import '../../../domain/repositories/task_repository.dart';
 import 'task_form_state.dart';
@@ -23,12 +24,22 @@ class TaskFormCubit extends Cubit<TaskFormState> {
       );
 
   void priorityChanged(Priority priority) {
-    emit(state.copyWith(priority: priority));
+    emit(
+      state.copyWith(
+        priority: priority,
+        status: state.status == FormStatus.failure ? FormStatus.editing : null,
+      ),
+    );
   }
 
   void titleEdited() {
-    if (state.titleError != null) {
-      emit(state.copyWith(titleError: () => null));
+    if (state.titleError != null || state.status == FormStatus.failure) {
+      emit(
+        state.copyWith(
+          titleError: () => null,
+          status: state.status == FormStatus.failure ? FormStatus.editing : null,
+        ),
+      );
     }
   }
 
@@ -54,25 +65,40 @@ class TaskFormCubit extends Cubit<TaskFormState> {
       priority: state.priority,
     );
 
-    final Result<dynamic> result;
     if (state.mode == FormMode.create) {
-      result = await _repo.create(state.taskId, draft);
-    } else {
-      result = await _repo.update(state.taskId, draft);
-    }
+      final Result<Task> result = await _repo.create(state.taskId, draft);
+      if (isClosed) return;
 
-    switch (result) {
-      case Success():
-        emit(state.copyWith(status: FormStatus.success, failure: () => null));
-      case Failed(:final failure):
-        _token++;
-        emit(
-          state.copyWith(
-            status: FormStatus.failure,
-            failure: () => failure,
-            token: _token,
-          ),
-        );
+      switch (result) {
+        case Success():
+          emit(state.copyWith(status: FormStatus.success, failure: () => null));
+        case Failed(:final failure):
+          _token++;
+          emit(
+            state.copyWith(
+              status: FormStatus.failure,
+              failure: () => failure,
+              token: _token,
+            ),
+          );
+      }
+    } else {
+      final Result<WriteOutcome> result = await _repo.update(state.taskId, draft);
+      if (isClosed) return;
+
+      switch (result) {
+        case Success():
+          emit(state.copyWith(status: FormStatus.success, failure: () => null));
+        case Failed(:final failure):
+          _token++;
+          emit(
+            state.copyWith(
+              status: FormStatus.failure,
+              failure: () => failure,
+              token: _token,
+            ),
+          );
+      }
     }
   }
 }

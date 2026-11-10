@@ -158,7 +158,7 @@ void main() {
         fakeRepo.nextSetCompletedResult = const Failed<WriteOutcome>(
           StorageFailure('Disk write failed'),
         );
-        bloc.add(bloc.state.actionFailure!.retryEvent);
+        bloc.add(bloc.state.actionFailure!.retryEvent!);
 
         await Future<void>.delayed(const Duration(milliseconds: 50));
 

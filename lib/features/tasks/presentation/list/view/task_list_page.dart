@@ -97,12 +97,14 @@ class _TaskListViewState extends State<_TaskListView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(failure.message),
-              action: SnackBarAction(
-                label: 'Retry',
-                onPressed: () {
-                  context.read<TaskListBloc>().add(failure.retryEvent);
-                },
-              ),
+              action: failure.retryEvent != null
+                  ? SnackBarAction(
+                      label: 'Retry',
+                      onPressed: () {
+                        context.read<TaskListBloc>().add(failure.retryEvent!);
+                      },
+                    )
+                  : null,
             ),
           );
         }
