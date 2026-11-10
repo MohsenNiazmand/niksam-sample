@@ -73,9 +73,9 @@ Items marked **[confirmed]** were reproduced with a throw-away probe test; **[by
 | [x] | F3 Presentation correctness | H2, H3, M5, M6, M7 | 1 |
 | [x] | F4 Widget & regression tests | M9 | 1 |
 | [x] | F5 Hygiene | L1, L2, L3 | 1 |
-| [ ] | F6 Run it for real (device) — **HUMAN-assisted** | D5 | 0–n |
-| [ ] | F7 Docs honesty & trimming — **HUMAN INPUT** | D1–D4 | 3 |
-| [ ] | F8 Final gate | — | 1 |
+| [x] | F6 Run it for real (device) — **HUMAN-assisted** | D5 | 0–n |
+| [x] | F7 Docs honesty & trimming — **HUMAN INPUT** | D1–D4 | 3 |
+| [x] | F8 Final gate | — | 1 |
 
 ---
 

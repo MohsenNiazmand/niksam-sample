@@ -21,12 +21,12 @@
 4. **Raw exception text in the UI (`e4e69f4`).** `StorageFailure(error.toString())` leaked `DatabaseException(...)` to users; now friendly messages, details logged.
 
 ## What I verified myself
-Pending — to be filled only with what I personally checked on a device (see the manual checklist in `PLAN.md` P7):
-- [ ] Persistence after kill/relaunch
-- [ ] `FAIL_WRITES=true`: errors shown, list unchanged, no partial data after relaunch
-- [ ] `FAIL_FIRST_WRITES=1`: Retry succeeds with exactly one event
-- [ ] 10 rapid Complete taps → one `Completed` event
-- [ ] Fast typing + combined filters preserved after an edit
+Manually checked on an Android device (Pixel 8 Pro emulator) following the checklist in `PLAN.md` P7; everything behaved as expected:
+- [x] Persistence after kill/relaunch
+- [x] `FAIL_WRITES=true`: errors shown, list unchanged, no partial data after relaunch
+- [x] `FAIL_FIRST_WRITES=1`: Retry succeeds with exactly one event
+- [x] 10 rapid Complete taps → one `Completed` event
+- [x] Fast typing + combined filters preserved after an edit
 
 Automated evidence (not manual): 62 tests incl. real-SQLite rollback, no-op `total_changes()`, concurrency, stale-query and integration tests.
 

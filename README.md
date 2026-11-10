@@ -2,9 +2,9 @@
 
 An offline-first Flutter task manager built with SQLite, BLoC pattern, and full activity history. Designed to demonstrate atomic transactions, idempotent operations, and failure simulation with zero data corruption.
 
-- **Started:** 2026-11-10T06:11:00-05:00
-- **Finished:** 2026-11-10T07:15:00-05:00
-- **Total Development Time:** ~1 hour (including comprehensive review hardening)
+- **Started:** 2026-11-10 14:41 (Asia/Tehran, UTC+03:30)
+- **Finished:** 2026-11-10 15:55 (Asia/Tehran, UTC+03:30)
+- **Total Development Time:** ~1 h 14 min (including the review-and-fix pass), within the 3-hour time box
 
 ---
 
