@@ -63,7 +63,7 @@ flutter run --dart-define=FAIL_FIRST_WRITES=1
 ---
 
 ## Limitations & Unfinished Scope
-1. **Case-Insensitive Search**: SQLite `LIKE` operator is case-insensitive for ASCII characters only. Unicode full case folding is omitted to avoid external C extensions.
+1. **Case-Insensitive Search**: SQLite `LIKE` operator is case-insensitive for ASCII characters only. Non-ASCII text is matched case-sensitively.
 2. **Device Clock Dependency**: Event ordering relies on the device's UTC clock (`DateTime.now().toUtc()`).
 3. **No Pagination**: The task list loads matching tasks for the current query directly from SQLite into memory.
 4. **No Undo on Hard Delete**: Deleted tasks and cascaded timelines are immediately purged from SQLite.
