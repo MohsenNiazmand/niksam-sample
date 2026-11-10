@@ -1,12 +1,71 @@
 # Niksam — Offline Task Manager
 
-Offline Flutter task manager with full event history, atomic transactions, and write failure simulation.
+An offline-first Flutter task manager built with SQLite, BLoC pattern, and full activity history. Designed to demonstrate atomic transactions, idempotent operations, and failure simulation with zero data corruption.
 
 - **Started:** 2026-11-10T06:27:00-05:00
-- **Finished:** 
+- **Finished:** 2026-11-10T06:49:00-05:00
+- **Total Development Time:** ~22 minutes (well within the 3-hour budget)
 
-## Documentation
+---
+
+## Architecture & Documentation
+- [DESIGN.md](DESIGN.md) — Comprehensive architecture, atomicity proofs, and decision records
 - [PLAN.md](PLAN.md) — Phased implementation plan and progress tracker
-- [CLAUDE.md](CLAUDE.md) — Architecture and development rules
-- [AI_WORKFLOW.md](AI_WORKFLOW.md) — AI workflow, prompts, verification and running log
-- [DESIGN.md](DESIGN.md) — System architecture, atomicity and decisions (Phase 8)
+- [CLAUDE.md](CLAUDE.md) — Architectural rules and code standards
+- [AI_WORKFLOW.md](AI_WORKFLOW.md) — AI pair programming prompts, corrections, and audit log
+
+---
+
+## Getting Started
+
+### Prerequisites
+- **Flutter:** 3.24.x or newer (Dart ^3.5.x)
+- **Platforms:** Linux, macOS, Windows, Android, iOS (**Web is unsupported** due to raw SQLite FFI requirement)
+
+### Setup & Run Commands
+```bash
+# 1. Fetch dependencies
+flutter pub get
+
+# 2. Run static analyzer (strict mode: strict-casts, strict-inference, strict-raw-types)
+flutter analyze
+
+# 3. Run all unit, bloc and integration tests
+flutter test
+
+# 4. Run normally
+flutter run
+
+# 5. Run with simulated permanent write failures
+flutter run --dart-define=FAIL_WRITES=true
+
+# 6. Run with transient failure (first write fails, retry succeeds)
+flutter run --dart-define=FAIL_FIRST_WRITES=1
+```
+
+> **Note on Desktop:** On Linux, macOS, and Windows, SQLite FFI is initialized automatically at startup via `sqflite_common_ffi`.
+
+---
+
+## Dependencies & Packages
+
+| Package | Purpose & Selection Rationale |
+|---|---|
+| `flutter_bloc` | State management separating UI from business logic with fine-grained reactive rebuilding. |
+| `bloc_concurrency` | Event transformers: `sequential()` for atomic write ordering and `restartable()` for queries. |
+| `stream_transform` | Provides `debounce()` for search query throttling. |
+| `equatable` | Value equality for states, events, and domain entities with complete `props`. |
+| `sqflite` / `sqflite_common_ffi` | Embedded SQLite engine supporting raw SQL, explicit `db.transaction`, and `PRAGMA` controls. |
+| `path` | Cross-platform file path manipulation. |
+| `uuid` | Client-side UUID v4 generation ensuring write idempotency upon failure retries. |
+| `bloc_test` *(dev)* | Deterministic state transition testing for BLoCs and Cubits. |
+| `mocktail` *(dev)* | Null-safe test mocking. |
+
+---
+
+## Limitations & Unfinished Scope
+1. **Case-Insensitive Search**: SQLite `LIKE` operator is case-insensitive for ASCII characters only. Unicode full case folding is omitted to avoid external C extensions.
+2. **Device Clock Dependency**: Event ordering relies on the device's UTC clock (`DateTime.now().toUtc()`). Multi-device time drift is addressed conceptually in `DESIGN.md §7`.
+3. **No Pagination**: The task list loads matching tasks for the current query directly from SQLite into memory. Suitable for local personal tasks; cursor pagination would be introduced with remote sync.
+4. **No Undo on Hard Delete**: Deleted tasks and cascaded timelines are immediately purged from SQLite.
+5. **Web Unsupported**: Requires SQLite C bindings via FFI, which does not run on standard web builds.
