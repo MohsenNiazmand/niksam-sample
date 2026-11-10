@@ -13,12 +13,11 @@ import '../datasources/task_local_datasource.dart';
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource dataSource;
   final DateTime Function() _now;
-  final StreamController<void> _changesController = StreamController<void>.broadcast();
+  final StreamController<void> _changesController =
+      StreamController<void>.broadcast();
 
-  TaskRepositoryImpl({
-    required this.dataSource,
-    DateTime Function()? now,
-  }) : _now = now ?? DateTime.now;
+  TaskRepositoryImpl({required this.dataSource, DateTime Function()? now})
+    : _now = now ?? DateTime.now;
 
   @override
   Stream<void> get changes => _changesController.stream;

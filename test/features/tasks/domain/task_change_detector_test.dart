@@ -25,14 +25,17 @@ void main() {
       expect(TaskChangeDetector.hasChanges(baseTask, draft), isFalse);
     });
 
-    test('returns false when differences are only leading/trailing whitespace', () {
-      final draft = TaskDraft(
-        title: '  Buy milk  ',
-        description: '  2 cartons of whole milk \n ',
-        priority: Priority.medium,
-      );
-      expect(TaskChangeDetector.hasChanges(baseTask, draft), isFalse);
-    });
+    test(
+      'returns false when differences are only leading/trailing whitespace',
+      () {
+        final draft = TaskDraft(
+          title: '  Buy milk  ',
+          description: '  2 cartons of whole milk \n ',
+          priority: Priority.medium,
+        );
+        expect(TaskChangeDetector.hasChanges(baseTask, draft), isFalse);
+      },
+    );
 
     test('returns true when title changed', () {
       final draft = TaskDraft(
@@ -81,7 +84,9 @@ void main() {
       final events = TaskChangeDetector.eventsForUpdate(baseTask, draft);
       expect(
         events,
-        equals([const TaskPriorityChanged(from: Priority.low, to: Priority.high)]),
+        equals([
+          const TaskPriorityChanged(from: Priority.low, to: Priority.high),
+        ]),
       );
     });
 

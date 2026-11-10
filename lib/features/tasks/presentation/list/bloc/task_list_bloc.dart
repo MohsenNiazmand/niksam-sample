@@ -10,7 +10,8 @@ import 'task_list_event.dart';
 import 'task_list_state.dart';
 
 EventTransformer<E> _debounceRestartable<E>(Duration duration) {
-  return (events, mapper) => restartable<E>()(events.debounce(duration), mapper);
+  return (events, mapper) =>
+      restartable<E>()(events.debounce(duration), mapper);
 }
 
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
@@ -30,7 +31,10 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       transformer: _debounceRestartable(const Duration(milliseconds: 300)),
     );
     on<TaskListPriorityChanged>(_onPriorityChanged, transformer: restartable());
-    on<TaskListCompletionChanged>(_onCompletionChanged, transformer: restartable());
+    on<TaskListCompletionChanged>(
+      _onCompletionChanged,
+      transformer: restartable(),
+    );
     on<TaskMutationRequested>(_onMutationRequested, transformer: sequential());
     on<TaskActionFailureDismissed>(_onActionFailureDismissed);
   }
@@ -76,30 +80,35 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     await _applyQuery(next, emit);
   }
 
-  Future<void> _applyQuery(
-    TaskQuery next,
-    Emitter<TaskListState> emit,
-  ) async {
-    emit(state.copyWith(
-      query: next,
-      status: state.tasks.isNotEmpty ? TaskListStatus.success : TaskListStatus.loading,
-    ));
+  Future<void> _applyQuery(TaskQuery next, Emitter<TaskListState> emit) async {
+    emit(
+      state.copyWith(
+        query: next,
+        status: state.tasks.isNotEmpty
+            ? TaskListStatus.success
+            : TaskListStatus.loading,
+      ),
+    );
 
     final result = await _repo.getTasks(next);
     if (emit.isDone || state.query != next) return;
 
     switch (result) {
       case Success(:final data):
-        emit(state.copyWith(
-          status: TaskListStatus.success,
-          tasks: data,
-          loadFailure: () => null,
-        ));
+        emit(
+          state.copyWith(
+            status: TaskListStatus.success,
+            tasks: data,
+            loadFailure: () => null,
+          ),
+        );
       case Failed(:final failure):
-        emit(state.copyWith(
-          status: TaskListStatus.failure,
-          loadFailure: () => failure,
-        ));
+        emit(
+          state.copyWith(
+            status: TaskListStatus.failure,
+            loadFailure: () => failure,
+          ),
+        );
     }
   }
 
@@ -119,14 +128,18 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       case Success():
         emit(state.copyWith(actionFailure: () => null));
       case Failed(:final failure):
-        final message = failure is NotFoundFailure ? 'Task no longer exists' : failure.message;
-        emit(state.copyWith(
-          actionFailure: () => ActionFailure(
-            message: message,
-            retryEvent: event,
-            token: ++_token,
+        final message = failure is NotFoundFailure
+            ? 'Task no longer exists'
+            : failure.message;
+        emit(
+          state.copyWith(
+            actionFailure: () => ActionFailure(
+              message: message,
+              retryEvent: event,
+              token: ++_token,
+            ),
           ),
-        ));
+        );
         add(const TaskListReloadRequested());
     }
   }

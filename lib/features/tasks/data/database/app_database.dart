@@ -9,11 +9,8 @@ class AppDatabase {
 
   Future<Database>? _dbFuture;
 
-  AppDatabase({
-    this.path,
-    this.factory,
-    List<Migration>? migrations,
-  }) : migrations = migrations ?? kMigrations;
+  AppDatabase({this.path, this.factory, List<Migration>? migrations})
+    : migrations = migrations ?? kMigrations;
 
   Future<Database> get database {
     _dbFuture ??= _open();
@@ -23,7 +20,8 @@ class AppDatabase {
   Future<Database> _open() async {
     try {
       final f = factory ?? databaseFactory;
-      final dbPath = path ?? p.join(await f.getDatabasesPath(), 'niksam_tasks.db');
+      final dbPath =
+          path ?? p.join(await f.getDatabasesPath(), 'niksam_tasks.db');
       final version = migrations.length;
 
       final db = await f.openDatabase(

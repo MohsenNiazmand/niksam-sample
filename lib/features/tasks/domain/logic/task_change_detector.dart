@@ -15,7 +15,9 @@ abstract final class TaskChangeDetector {
   static List<TaskEventKind> eventsForUpdate(Task stored, TaskDraft next) {
     final normalized = next.normalized();
     if (stored.priority != normalized.priority) {
-      return [TaskPriorityChanged(from: stored.priority, to: normalized.priority)];
+      return [
+        TaskPriorityChanged(from: stored.priority, to: normalized.priority),
+      ];
     }
     return const [];
   }

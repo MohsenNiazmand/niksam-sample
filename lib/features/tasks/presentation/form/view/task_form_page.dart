@@ -15,7 +15,8 @@ class TaskFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (ctx) => TaskFormCubit(ctx.read<TaskRepository>(), original: original),
+      create: (ctx) =>
+          TaskFormCubit(ctx.read<TaskRepository>(), original: original),
       child: const _TaskFormView(),
     );
   }
@@ -36,7 +37,9 @@ class _TaskFormViewState extends State<_TaskFormView> {
   void initState() {
     super.initState();
     final cubit = context.read<TaskFormCubit>();
-    _titleController = TextEditingController(text: cubit.state.original?.title ?? '');
+    _titleController = TextEditingController(
+      text: cubit.state.original?.title ?? '',
+    );
     _descriptionController = TextEditingController(
       text: cubit.state.original?.description ?? '',
     );
@@ -50,9 +53,9 @@ class _TaskFormViewState extends State<_TaskFormView> {
 
   void _submit() {
     context.read<TaskFormCubit>().submit(
-          _titleController.text,
-          _descriptionController.text,
-        );
+      _titleController.text,
+      _descriptionController.text,
+    );
   }
 
   @override
@@ -73,10 +76,7 @@ class _TaskFormViewState extends State<_TaskFormView> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.failure?.message ?? 'Failed to save task'),
-              action: SnackBarAction(
-                label: 'Retry',
-                onPressed: _submit,
-              ),
+              action: SnackBarAction(label: 'Retry', onPressed: _submit),
             ),
           );
         }
@@ -84,7 +84,8 @@ class _TaskFormViewState extends State<_TaskFormView> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            context.select<TaskFormCubit, FormMode>((c) => c.state.mode) == FormMode.create
+            context.select<TaskFormCubit, FormMode>((c) => c.state.mode) ==
+                    FormMode.create
                 ? 'Create Task'
                 : 'Edit Task',
           ),
@@ -99,7 +100,8 @@ class _TaskFormViewState extends State<_TaskFormView> {
                 builder: (context, state) {
                   final errorText = switch (state.titleError) {
                     TitleError.empty => 'Title is required',
-                    TitleError.tooLong => 'Title must be 120 characters or less',
+                    TitleError.tooLong =>
+                      'Title must be 120 characters or less',
                     null => null,
                   };
 
@@ -125,10 +127,7 @@ class _TaskFormViewState extends State<_TaskFormView> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(
-                'Priority',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
+              Text('Priority', style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               BlocBuilder<TaskFormCubit, TaskFormState>(
                 buildWhen: (prev, curr) => prev.priority != curr.priority,
@@ -136,12 +135,17 @@ class _TaskFormViewState extends State<_TaskFormView> {
                   return SegmentedButton<Priority>(
                     segments: const [
                       ButtonSegment(value: Priority.low, label: Text('Low')),
-                      ButtonSegment(value: Priority.medium, label: Text('Medium')),
+                      ButtonSegment(
+                        value: Priority.medium,
+                        label: Text('Medium'),
+                      ),
                       ButtonSegment(value: Priority.high, label: Text('High')),
                     ],
                     selected: {state.priority},
                     onSelectionChanged: (selected) {
-                      context.read<TaskFormCubit>().priorityChanged(selected.first);
+                      context.read<TaskFormCubit>().priorityChanged(
+                        selected.first,
+                      );
                     },
                   );
                 },

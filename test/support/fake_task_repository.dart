@@ -9,7 +9,8 @@ import 'package:niksam/features/tasks/domain/entities/write_outcome.dart';
 import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
 
 class FakeTaskRepository implements TaskRepository {
-  final StreamController<void> _changesController = StreamController<void>.broadcast();
+  final StreamController<void> _changesController =
+      StreamController<void>.broadcast();
 
   List<Task> storedTasks;
   List<TaskEvent> storedEvents;
@@ -23,11 +24,9 @@ class FakeTaskRepository implements TaskRepository {
   Result<void>? nextDeleteResult;
   Result<List<Task>>? nextGetTasksResult;
 
-  FakeTaskRepository({
-    List<Task>? tasks,
-    List<TaskEvent>? events,
-  })  : storedTasks = tasks ?? [],
-        storedEvents = events ?? [];
+  FakeTaskRepository({List<Task>? tasks, List<TaskEvent>? events})
+    : storedTasks = tasks ?? [],
+      storedEvents = events ?? [];
 
   void emitChange() {
     _changesController.add(null);

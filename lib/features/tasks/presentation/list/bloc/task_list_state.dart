@@ -50,16 +50,12 @@ class TaskListState extends Equatable {
       tasks: tasks ?? this.tasks,
       query: query ?? this.query,
       loadFailure: loadFailure != null ? loadFailure() : this.loadFailure,
-      actionFailure: actionFailure != null ? actionFailure() : this.actionFailure,
+      actionFailure: actionFailure != null
+          ? actionFailure()
+          : this.actionFailure,
     );
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        tasks,
-        query,
-        loadFailure,
-        actionFailure,
-      ];
+  List<Object?> get props => [status, tasks, query, loadFailure, actionFailure];
 }

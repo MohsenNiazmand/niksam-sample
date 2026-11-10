@@ -25,7 +25,10 @@ void main() {
     test('returns TitleError.tooLong for 121 characters', () {
       final title121 = 'a' * 121;
       expect(TaskValidator.validateTitle(title121), equals(TitleError.tooLong));
-      expect(TaskValidator.validateTitle(' $title121 '), equals(TitleError.tooLong));
+      expect(
+        TaskValidator.validateTitle(' $title121 '),
+        equals(TitleError.tooLong),
+      );
     });
   });
 }

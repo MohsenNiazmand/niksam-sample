@@ -25,7 +25,9 @@ Future<void> _v1(DatabaseExecutor db) async {
     );
   ''');
 
-  await db.execute('CREATE INDEX idx_events_task ON task_events(task_id, occurred_at, id);');
+  await db.execute(
+    'CREATE INDEX idx_events_task ON task_events(task_id, occurred_at, id);',
+  );
   await db.execute('CREATE INDEX idx_tasks_created ON tasks(created_at DESC);');
 }
 

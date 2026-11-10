@@ -4,7 +4,9 @@ import 'package:niksam/app.dart';
 import '../../../../support/fake_task_repository.dart';
 
 void main() {
-  testWidgets('App boots with fake repo and shows empty state and app bar', (tester) async {
+  testWidgets('App boots with fake repo and shows empty state and app bar', (
+    tester,
+  ) async {
     final fakeRepo = FakeTaskRepository();
 
     await tester.pumpWidget(MyApp(repository: fakeRepo));

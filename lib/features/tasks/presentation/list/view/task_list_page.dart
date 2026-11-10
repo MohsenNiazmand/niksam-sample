@@ -18,7 +18,9 @@ class TaskListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (ctx) => TaskListBloc(ctx.read<TaskRepository>())..add(const TaskListStarted()),
+      create: (ctx) =>
+          TaskListBloc(ctx.read<TaskRepository>())
+            ..add(const TaskListStarted()),
       child: const _TaskListView(),
     );
   }
@@ -39,7 +41,9 @@ class _TaskListViewState extends State<_TaskListView> {
       context: context,
       builder: (dialogCtx) => AlertDialog(
         title: const Text('Delete Task?'),
-        content: Text('Are you sure you want to delete "${task.title}" and its entire history?'),
+        content: Text(
+          'Are you sure you want to delete "${task.title}" and its entire history?',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogCtx).pop(false),
@@ -69,9 +73,7 @@ class _TaskListViewState extends State<_TaskListView> {
 
   void _openForm(BuildContext context, [Task? task]) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => TaskFormPage(original: task),
-      ),
+      MaterialPageRoute<void>(builder: (_) => TaskFormPage(original: task)),
     );
   }
 
@@ -87,7 +89,8 @@ class _TaskListViewState extends State<_TaskListView> {
   Widget build(BuildContext context) {
     return BlocListener<TaskListBloc, TaskListState>(
       listenWhen: (prev, curr) =>
-          curr.actionFailure != null && prev.actionFailure != curr.actionFailure,
+          curr.actionFailure != null &&
+          prev.actionFailure != curr.actionFailure,
       listener: (context, state) {
         final failure = state.actionFailure;
         if (failure != null) {
@@ -105,9 +108,7 @@ class _TaskListViewState extends State<_TaskListView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Niksam Tasks'),
-        ),
+        appBar: AppBar(title: const Text('Niksam Tasks')),
         body: Column(
           children: [
             SearchField(
@@ -116,7 +117,9 @@ class _TaskListViewState extends State<_TaskListView> {
                 context.read<TaskListBloc>().add(TaskListSearchChanged(text));
               },
               onClear: () {
-                context.read<TaskListBloc>().add(const TaskListSearchChanged(''));
+                context.read<TaskListBloc>().add(
+                  const TaskListSearchChanged(''),
+                );
               },
             ),
             const FilterBar(),
@@ -140,7 +143,8 @@ class _TaskListViewState extends State<_TaskListView> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                state.loadFailure?.message ?? 'Failed to load tasks',
+                                state.loadFailure?.message ??
+                                    'Failed to load tasks',
                                 style: Theme.of(context).textTheme.bodyLarge,
                                 textAlign: TextAlign.center,
                               ),
@@ -148,8 +152,8 @@ class _TaskListViewState extends State<_TaskListView> {
                               ElevatedButton(
                                 onPressed: () {
                                   context.read<TaskListBloc>().add(
-                                        const TaskListReloadRequested(),
-                                      );
+                                    const TaskListReloadRequested(),
+                                  );
                                 },
                                 child: const Text('Retry'),
                               ),
@@ -166,7 +170,11 @@ class _TaskListViewState extends State<_TaskListView> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.search_off, size: 48, color: Colors.grey),
+                                  const Icon(
+                                    Icons.search_off,
+                                    size: 48,
+                                    color: Colors.grey,
+                                  ),
                                   const SizedBox(height: 8),
                                   const Text('No tasks match your filter'),
                                   const SizedBox(height: 12),
@@ -185,7 +193,11 @@ class _TaskListViewState extends State<_TaskListView> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.task_alt, size: 48, color: Colors.grey),
+                                Icon(
+                                  Icons.task_alt,
+                                  size: 48,
+                                  color: Colors.grey,
+                                ),
                                 SizedBox(height: 8),
                                 Text('No tasks yet. Tap + to create one.'),
                               ],
@@ -203,8 +215,8 @@ class _TaskListViewState extends State<_TaskListView> {
                             onTap: () => _openTimeline(context, task),
                             onToggle: (completed) {
                               context.read<TaskListBloc>().add(
-                                    TaskCompletionSetRequested(task.id, completed),
-                                  );
+                                TaskCompletionSetRequested(task.id, completed),
+                              );
                             },
                             onEdit: () => _openForm(context, task),
                             onDelete: () => _confirmDelete(context, task),

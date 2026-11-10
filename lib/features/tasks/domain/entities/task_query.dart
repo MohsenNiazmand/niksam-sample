@@ -1,11 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'priority.dart';
 
-enum CompletionFilter {
-  all,
-  open,
-  completed,
-}
+enum CompletionFilter { all, open, completed }
 
 class TaskQuery extends Equatable {
   final String text;

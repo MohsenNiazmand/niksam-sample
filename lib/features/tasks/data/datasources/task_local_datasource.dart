@@ -95,11 +95,7 @@ class TaskLocalDataSource {
 
       await txn.insert(
         'task_events',
-        TaskEventModel.toMap(
-          taskId: id,
-          at: now,
-          kind: const TaskCreated(),
-        ),
+        TaskEventModel.toMap(taskId: id, at: now, kind: const TaskCreated()),
       );
       faultInjector.checkpoint('before_commit');
     });
@@ -150,7 +146,11 @@ class TaskLocalDataSource {
     });
   }
 
-  Future<WriteOutcome> setCompleted(String id, bool completed, DateTime now) async {
+  Future<WriteOutcome> setCompleted(
+    String id,
+    bool completed,
+    DateTime now,
+  ) async {
     faultInjector.beginWrite();
     final db = await database.database;
 
@@ -161,7 +161,10 @@ class TaskLocalDataSource {
       }
 
       final stored = TaskModel.fromMap(rows.first);
-      final eventKind = TaskChangeDetector.eventForCompletion(stored, completed);
+      final eventKind = TaskChangeDetector.eventForCompletion(
+        stored,
+        completed,
+      );
       if (eventKind == null) {
         return const Unchanged();
       }

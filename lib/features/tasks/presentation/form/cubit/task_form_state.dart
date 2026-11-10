@@ -53,13 +53,13 @@ class TaskFormState extends Equatable {
 
   @override
   List<Object?> get props => [
-        mode,
-        taskId,
-        priority,
-        titleError,
-        status,
-        failure,
-        token,
-        original,
-      ];
+    mode,
+    taskId,
+    priority,
+    titleError,
+    status,
+    failure,
+    token,
+    original,
+  ];
 }

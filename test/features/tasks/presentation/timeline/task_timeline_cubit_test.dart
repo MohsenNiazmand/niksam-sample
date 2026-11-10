@@ -64,7 +64,10 @@ void main() {
       // First attempt fails
       await cubit.load();
       expect(cubit.state.status, equals(TimelineStatus.failure));
-      expect(cubit.state.failure, equals(const StorageFailure('Timeline DB error')));
+      expect(
+        cubit.state.failure,
+        equals(const StorageFailure('Timeline DB error')),
+      );
 
       // Retry recovers
       await cubit.load();

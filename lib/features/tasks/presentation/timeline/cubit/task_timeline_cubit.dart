@@ -15,16 +15,20 @@ class TaskTimelineCubit extends Cubit<TaskTimelineState> {
     final result = await _repo.getTimeline(taskId);
     switch (result) {
       case Success(:final data):
-        emit(state.copyWith(
-          status: TimelineStatus.success,
-          events: data,
-          failure: () => null,
-        ));
+        emit(
+          state.copyWith(
+            status: TimelineStatus.success,
+            events: data,
+            failure: () => null,
+          ),
+        );
       case Failed(:final failure):
-        emit(state.copyWith(
-          status: TimelineStatus.failure,
-          failure: () => failure,
-        ));
+        emit(
+          state.copyWith(
+            status: TimelineStatus.failure,
+            failure: () => failure,
+          ),
+        );
     }
   }
 }

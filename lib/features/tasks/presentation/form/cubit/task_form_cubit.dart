@@ -12,18 +12,15 @@ class TaskFormCubit extends Cubit<TaskFormState> {
   final TaskRepository _repo;
   int _token = 0;
 
-  TaskFormCubit(
-    this._repo, {
-    Task? original,
-    Uuid? uuid,
-  }) : super(
-          TaskFormState(
-            mode: original != null ? FormMode.edit : FormMode.create,
-            taskId: original?.id ?? (uuid ?? const Uuid()).v4(),
-            priority: original?.priority ?? Priority.medium,
-            original: original,
-          ),
-        );
+  TaskFormCubit(this._repo, {Task? original, Uuid? uuid})
+    : super(
+        TaskFormState(
+          mode: original != null ? FormMode.edit : FormMode.create,
+          taskId: original?.id ?? (uuid ?? const Uuid()).v4(),
+          priority: original?.priority ?? Priority.medium,
+          original: original,
+        ),
+      );
 
   void priorityChanged(Priority priority) {
     emit(state.copyWith(priority: priority));
@@ -40,10 +37,12 @@ class TaskFormCubit extends Cubit<TaskFormState> {
 
     final titleError = TaskValidator.validateTitle(title);
     if (titleError != null) {
-      emit(state.copyWith(
-        titleError: () => titleError,
-        status: FormStatus.editing,
-      ));
+      emit(
+        state.copyWith(
+          titleError: () => titleError,
+          status: FormStatus.editing,
+        ),
+      );
       return;
     }
 
@@ -64,17 +63,16 @@ class TaskFormCubit extends Cubit<TaskFormState> {
 
     switch (result) {
       case Success():
-        emit(state.copyWith(
-          status: FormStatus.success,
-          failure: () => null,
-        ));
+        emit(state.copyWith(status: FormStatus.success, failure: () => null));
       case Failed(:final failure):
         _token++;
-        emit(state.copyWith(
-          status: FormStatus.failure,
-          failure: () => failure,
-          token: _token,
-        ));
+        emit(
+          state.copyWith(
+            status: FormStatus.failure,
+            failure: () => failure,
+            token: _token,
+          ),
+        );
     }
   }
 }

@@ -1,7 +1,4 @@
-enum TitleError {
-  empty,
-  tooLong,
-}
+enum TitleError { empty, tooLong }
 
 abstract final class TaskValidator {
   static const int maxTitleLength = 120;

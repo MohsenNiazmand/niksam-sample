@@ -11,7 +11,11 @@ class FilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TaskListBloc, TaskListState, ({Priority? p, CompletionFilter c})>(
+    return BlocSelector<
+      TaskListBloc,
+      TaskListState,
+      ({Priority? p, CompletionFilter c})
+    >(
       selector: (state) => (p: state.query.priority, c: state.query.completion),
       builder: (context, filter) {
         final bloc = context.read<TaskListBloc>();
@@ -49,14 +53,17 @@ class FilterBar extends StatelessWidget {
                   FilterChip(
                     label: const Text('All Priorities'),
                     selected: filter.p == null,
-                    onSelected: (_) => bloc.add(const TaskListPriorityChanged(null)),
+                    onSelected: (_) =>
+                        bloc.add(const TaskListPriorityChanged(null)),
                   ),
                   ...Priority.values.map(
                     (Priority priority) => FilterChip(
                       label: Text(priority.label),
                       selected: filter.p == priority,
                       onSelected: (selected) {
-                        bloc.add(TaskListPriorityChanged(selected ? priority : null));
+                        bloc.add(
+                          TaskListPriorityChanged(selected ? priority : null),
+                        );
                       },
                     ),
                   ),

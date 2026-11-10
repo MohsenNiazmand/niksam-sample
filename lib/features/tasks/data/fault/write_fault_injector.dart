@@ -41,7 +41,9 @@ class ConfiguredFault implements WriteFaultInjector {
   @override
   void checkpoint(String name) {
     if (failWrites) {
-      throw InjectedWriteException('Simulated write failure (FAIL_WRITES=true) at $name');
+      throw InjectedWriteException(
+        'Simulated write failure (FAIL_WRITES=true) at $name',
+      );
     }
     if (failFirstWrites > 0 && _writeCount <= failFirstWrites) {
       throw InjectedWriteException(

@@ -53,7 +53,9 @@ class TaskTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
                         color: task.isCompleted
                             ? Theme.of(context).colorScheme.outline
                             : null,
@@ -68,7 +70,9 @@ class TaskTile extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           color: Theme.of(context).colorScheme.outline,
-                          decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

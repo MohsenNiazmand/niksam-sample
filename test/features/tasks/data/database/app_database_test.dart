@@ -9,24 +9,27 @@ void main() {
   });
 
   group('AppDatabase', () {
-    test('fresh open sets schema version and enables foreign_keys pragma', () async {
-      final appDb = AppDatabase(
-        path: inMemoryDatabasePath,
-        factory: databaseFactoryFfi,
-      );
+    test(
+      'fresh open sets schema version and enables foreign_keys pragma',
+      () async {
+        final appDb = AppDatabase(
+          path: inMemoryDatabasePath,
+          factory: databaseFactoryFfi,
+        );
 
-      final db = await appDb.database;
+        final db = await appDb.database;
 
-      final versionResult = await db.rawQuery('PRAGMA user_version');
-      final version = versionResult.first.values.first as int;
-      expect(version, equals(schemaVersion));
+        final versionResult = await db.rawQuery('PRAGMA user_version');
+        final version = versionResult.first.values.first as int;
+        expect(version, equals(schemaVersion));
 
-      final fkResult = await db.rawQuery('PRAGMA foreign_keys');
-      final fk = fkResult.first.values.first as int;
-      expect(fk, equals(1));
+        final fkResult = await db.rawQuery('PRAGMA foreign_keys');
+        final fk = fkResult.first.values.first as int;
+        expect(fk, equals(1));
 
-      await appDb.close();
-    });
+        await appDb.close();
+      },
+    );
 
     test('migration chain v0->v2 applies migrations in order', () async {
       final appliedMigrations = <int>[];
@@ -71,7 +74,8 @@ void main() {
           'id': 'task-invalid-priority',
           'title': 'Test task',
           'description': '',
-          'priority': 'critical', // Invalid priority! (must be low, medium, high)
+          'priority':
+              'critical', // Invalid priority! (must be low, medium, high)
           'is_completed': 0,
           'created_at': 1700000000,
         }),

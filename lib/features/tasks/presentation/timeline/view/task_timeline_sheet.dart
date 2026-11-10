@@ -14,7 +14,8 @@ class TaskTimelineSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (ctx) => TaskTimelineCubit(ctx.read<TaskRepository>(), task.id)..load(),
+      create: (ctx) =>
+          TaskTimelineCubit(ctx.read<TaskRepository>(), task.id)..load(),
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -38,8 +39,8 @@ class TaskTimelineSheet extends StatelessWidget {
               Text(
                 task.title,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
+                  color: Theme.of(context).colorScheme.outline,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -62,10 +63,14 @@ class TaskTimelineSheet extends StatelessWidget {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(state.failure?.message ?? 'Failed to load timeline'),
+                                Text(
+                                  state.failure?.message ??
+                                      'Failed to load timeline',
+                                ),
                                 const SizedBox(height: 8),
                                 ElevatedButton(
-                                  onPressed: () => context.read<TaskTimelineCubit>().load(),
+                                  onPressed: () =>
+                                      context.read<TaskTimelineCubit>().load(),
                                   child: const Text('Retry'),
                                 ),
                               ],
@@ -89,33 +94,38 @@ class TaskTimelineSheet extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final event = state.events[index];
                             final localDateTime = event.at.toLocal();
-                            final dateStr = localizations.formatMediumDate(localDateTime);
+                            final dateStr = localizations.formatMediumDate(
+                              localDateTime,
+                            );
                             final timeStr = localizations.formatTimeOfDay(
                               TimeOfDay.fromDateTime(localDateTime),
                             );
 
-                            final (IconData icon, Color color, String description) =
-                                switch (event.kind) {
+                            final (
+                              IconData icon,
+                              Color color,
+                              String description,
+                            ) = switch (event.kind) {
                               TaskCreated() => (
-                                  Icons.add_circle_outline,
-                                  Colors.blue,
-                                  'Task created'
-                                ),
+                                Icons.add_circle_outline,
+                                Colors.blue,
+                                'Task created',
+                              ),
                               TaskPriorityChanged(:final from, :final to) => (
-                                  Icons.flag_outlined,
-                                  Colors.orange,
-                                  'Priority: ${from.label} → ${to.label}'
-                                ),
+                                Icons.flag_outlined,
+                                Colors.orange,
+                                'Priority: ${from.label} → ${to.label}',
+                              ),
                               TaskCompleted() => (
-                                  Icons.check_circle_outline,
-                                  Colors.green,
-                                  'Marked as completed'
-                                ),
+                                Icons.check_circle_outline,
+                                Colors.green,
+                                'Marked as completed',
+                              ),
                               TaskReopened() => (
-                                  Icons.replay,
-                                  Colors.purple,
-                                  'Reopened'
-                                ),
+                                Icons.replay,
+                                Colors.purple,
+                                'Reopened',
+                              ),
                             };
 
                             return ListTile(
