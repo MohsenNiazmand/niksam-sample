@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:niksam/core/error/failures.dart';
-import '../../../domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
 
 enum TimelineStatus { loading, success, failure }
 

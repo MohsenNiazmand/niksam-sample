@@ -1,13 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:niksam/core/utils/result.dart';
 import 'package:uuid/uuid.dart';
-import '../../../domain/entities/priority.dart';
-import '../../../domain/entities/task.dart';
-import '../../../domain/entities/task_draft.dart';
-import '../../../domain/entities/write_outcome.dart';
-import '../../../domain/logic/task_validator.dart';
-import '../../../domain/repositories/task_repository.dart';
-import 'task_form_state.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_draft.dart';
+import 'package:niksam/features/tasks/domain/entities/write_outcome.dart';
+import 'package:niksam/features/tasks/domain/logic/task_validator.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/form/cubit/task_form_state.dart';
 
 class TaskFormCubit extends Cubit<TaskFormState> {
   final TaskRepository _repo;

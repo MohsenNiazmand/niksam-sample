@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entities/priority.dart';
-import '../../../domain/entities/task.dart';
-import '../../../domain/logic/task_validator.dart';
-import '../../../domain/repositories/task_repository.dart';
-import '../cubit/task_form_cubit.dart';
-import '../cubit/task_form_state.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/logic/task_validator.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/form/cubit/task_form_cubit.dart';
+import 'package:niksam/features/tasks/presentation/form/cubit/task_form_state.dart';
 
 class TaskFormPage extends StatelessWidget {
   final Task? original;

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:niksam/core/utils/result.dart';
-import '../../../domain/repositories/task_repository.dart';
-import 'task_timeline_state.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/timeline/cubit/task_timeline_state.dart';
 
 class TaskTimelineCubit extends Cubit<TaskTimelineState> {
   final TaskRepository _repo;

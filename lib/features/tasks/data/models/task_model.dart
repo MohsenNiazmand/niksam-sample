@@ -1,5 +1,5 @@
-import '../../domain/entities/priority.dart';
-import '../../domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
 
 abstract final class TaskModel {
   static Task fromMap(Map<String, Object?> map) {

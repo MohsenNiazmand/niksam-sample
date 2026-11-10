@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'task.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
 
 sealed class WriteOutcome extends Equatable {
   const WriteOutcome();

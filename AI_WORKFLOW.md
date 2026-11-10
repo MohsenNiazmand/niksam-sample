@@ -77,3 +77,4 @@
 - **F2**: Hardened repository error mapping and logging, guarded change notifications against closed streams, enabled database open retry, threw on corrupt priority, enforced UTC dates, and cleaned up delete method. Passed 59 tests.
 - **F3**: Guarded cubit/bloc emits after close, added `listenWhen` to prevent duplicate error snackbars, made action failure retry event nullable (no retry for missing tasks), replaced dynamic results with typed types, and trimmed query text in `isActive`. Passed 59 tests.
 - **F4**: Added comprehensive widget tests for form validation, submission failure flow, single SnackBar retry, no duplicate error snackbars on priority change, and filter-with-no-match empty state. Passed 62 tests.
+- **F5**: Unified package imports across codebase (`always_use_package_imports`), dropped unused `mocktail` and `cupertino_icons` dependencies, updated package description, and renamed `MyApp` to `NiksamApp`. Passed 62 tests.

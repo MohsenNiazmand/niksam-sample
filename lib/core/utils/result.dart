@@ -1,4 +1,4 @@
-import '../error/failures.dart';
+import 'package:niksam/core/error/failures.dart';
 
 sealed class Result<T> {
   const Result();

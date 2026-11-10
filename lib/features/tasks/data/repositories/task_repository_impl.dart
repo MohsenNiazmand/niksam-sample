@@ -1,16 +1,16 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/utils/result.dart';
-import '../../domain/entities/task.dart';
-import '../../domain/entities/task_draft.dart';
-import '../../domain/entities/task_event.dart';
-import '../../domain/entities/task_query.dart';
-import '../../domain/entities/write_outcome.dart';
-import '../../domain/repositories/task_repository.dart';
-import '../datasources/task_local_datasource.dart';
-import '../fault/write_fault_injector.dart';
+import 'package:niksam/core/error/exceptions.dart';
+import 'package:niksam/core/error/failures.dart';
+import 'package:niksam/core/utils/result.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_draft.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/domain/entities/write_outcome.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/data/datasources/task_local_datasource.dart';
+import 'package:niksam/features/tasks/data/fault/write_fault_injector.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource dataSource;

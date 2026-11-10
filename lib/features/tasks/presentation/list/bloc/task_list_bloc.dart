@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:niksam/core/error/failures.dart';
 import 'package:niksam/core/utils/result.dart';
 import 'package:stream_transform/stream_transform.dart';
-import '../../../domain/entities/task_query.dart';
-import '../../../domain/repositories/task_repository.dart';
-import 'task_list_event.dart';
-import 'task_list_state.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_event.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_state.dart';
 
 EventTransformer<E> _debounceRestartable<E>(Duration duration) {
   return (events, mapper) =>

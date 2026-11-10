@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:niksam/features/tasks/domain/entities/task.dart';
 import 'package:niksam/features/tasks/domain/entities/task_query.dart';
 import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
-import '../../form/view/task_form_page.dart';
-import '../../timeline/view/task_timeline_sheet.dart';
-import '../bloc/task_list_bloc.dart';
-import '../bloc/task_list_event.dart';
-import '../bloc/task_list_state.dart';
-import 'widgets/filter_bar.dart';
-import 'widgets/search_field.dart';
-import 'widgets/task_tile.dart';
+import 'package:niksam/features/tasks/presentation/form/view/task_form_page.dart';
+import 'package:niksam/features/tasks/presentation/timeline/view/task_timeline_sheet.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_bloc.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_event.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_state.dart';
+import 'package:niksam/features/tasks/presentation/list/view/widgets/filter_bar.dart';
+import 'package:niksam/features/tasks/presentation/list/view/widgets/search_field.dart';
+import 'package:niksam/features/tasks/presentation/list/view/widgets/task_tile.dart';
 
 class TaskListPage extends StatelessWidget {
   const TaskListPage({super.key});

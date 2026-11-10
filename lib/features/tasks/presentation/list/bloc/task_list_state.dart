@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:niksam/core/error/failures.dart';
-import '../../../domain/entities/task.dart';
-import '../../../domain/entities/task_query.dart';
-import 'task_list_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/presentation/list/bloc/task_list_event.dart';
 
 enum TaskListStatus { loading, success, failure }
 

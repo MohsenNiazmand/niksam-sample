@@ -1,6 +1,6 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
-import 'migrations.dart';
+import 'package:niksam/features/tasks/data/database/migrations.dart';
 
 class AppDatabase {
   final String? path;

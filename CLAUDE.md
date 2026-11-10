@@ -12,7 +12,7 @@ Offline Flutter task manager (entrance assignment, 3 h time box). Two screens: t
 - `flutter run` · `flutter run --dart-define=FAIL_WRITES=true` (all writes fail) · `--dart-define=FAIL_FIRST_WRITES=1` (first write fails, then recovers). Changing a dart-define needs a full restart, not hot reload.
 
 ## Architecture rules
-- Feature-first: `lib/features/tasks/{domain,data,presentation}` + small `lib/core/`. Dependency direction: `presentation → domain ← data`.
+- Feature-first: `lib/features/tasks/{domain,data,presentation}` + small `lib/core/`. Dependency direction: `presentation → domain ← data`. Package imports only (`always_use_package_imports`).
 - `domain` is pure Dart: no Flutter, sqflite, or bloc imports. Real logic lives in pure functions (`TaskChangeDetector`, `TaskValidator`).
 - Blocs/cubits depend on the `TaskRepository` interface only; they never import `data/`. Widgets never touch the repository or contain business logic.
 - No UseCase classes. Repository returns `Result<T>` (`Success`/`Failed`); raw exceptions never leave `data/`.

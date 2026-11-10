@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'priority.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
 
 enum CompletionFilter { all, open, completed }
 

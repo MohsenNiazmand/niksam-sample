@@ -1,14 +1,14 @@
-import '../../../../core/error/exceptions.dart';
-import '../../domain/entities/task.dart';
-import '../../domain/entities/task_draft.dart';
-import '../../domain/entities/task_event.dart';
-import '../../domain/entities/task_query.dart';
-import '../../domain/entities/write_outcome.dart';
-import '../../domain/logic/task_change_detector.dart';
-import '../database/app_database.dart';
-import '../fault/write_fault_injector.dart';
-import '../models/task_event_model.dart';
-import '../models/task_model.dart';
+import 'package:niksam/core/error/exceptions.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_draft.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/domain/entities/write_outcome.dart';
+import 'package:niksam/features/tasks/domain/logic/task_change_detector.dart';
+import 'package:niksam/features/tasks/data/database/app_database.dart';
+import 'package:niksam/features/tasks/data/fault/write_fault_injector.dart';
+import 'package:niksam/features/tasks/data/models/task_event_model.dart';
+import 'package:niksam/features/tasks/data/models/task_model.dart';
 
 class TaskLocalDataSource {
   final AppDatabase database;

@@ -1,9 +1,9 @@
-import '../../../../core/utils/result.dart';
-import '../entities/task.dart';
-import '../entities/task_draft.dart';
-import '../entities/task_event.dart';
-import '../entities/task_query.dart';
-import '../entities/write_outcome.dart';
+import 'package:niksam/core/utils/result.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_draft.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/domain/entities/write_outcome.dart';
 
 abstract interface class TaskRepository {
   Stream<void> get changes;

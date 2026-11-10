@@ -1,6 +1,6 @@
-import '../entities/task.dart';
-import '../entities/task_draft.dart';
-import '../entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_draft.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
 
 abstract final class TaskChangeDetector {
   static bool hasChanges(Task stored, TaskDraft next) {

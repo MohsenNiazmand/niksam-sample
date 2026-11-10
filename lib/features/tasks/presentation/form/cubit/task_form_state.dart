@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:niksam/core/error/failures.dart';
-import '../../../domain/entities/priority.dart';
-import '../../../domain/entities/task.dart';
-import '../../../domain/logic/task_validator.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/logic/task_validator.dart';
 
 enum FormMode { create, edit }
 

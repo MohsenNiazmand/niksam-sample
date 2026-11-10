@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entities/task.dart';
-import '../../../domain/entities/task_event.dart';
-import '../../../domain/repositories/task_repository.dart';
-import '../cubit/task_timeline_cubit.dart';
-import '../cubit/task_timeline_state.dart';
+import 'package:niksam/features/tasks/domain/entities/task.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/timeline/cubit/task_timeline_cubit.dart';
+import 'package:niksam/features/tasks/presentation/timeline/cubit/task_timeline_state.dart';
 
 class TaskTimelineSheet extends StatelessWidget {
   final Task task;

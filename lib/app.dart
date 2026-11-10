@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/theme/app_theme.dart';
-import 'features/tasks/data/database/app_database.dart';
-import 'features/tasks/data/datasources/task_local_datasource.dart';
-import 'features/tasks/data/fault/write_fault_injector.dart';
-import 'features/tasks/data/repositories/task_repository_impl.dart';
-import 'features/tasks/domain/repositories/task_repository.dart';
-import 'features/tasks/presentation/list/view/task_list_page.dart';
+import 'package:niksam/core/theme/app_theme.dart';
+import 'package:niksam/features/tasks/data/database/app_database.dart';
+import 'package:niksam/features/tasks/data/datasources/task_local_datasource.dart';
+import 'package:niksam/features/tasks/data/fault/write_fault_injector.dart';
+import 'package:niksam/features/tasks/data/repositories/task_repository_impl.dart';
+import 'package:niksam/features/tasks/domain/repositories/task_repository.dart';
+import 'package:niksam/features/tasks/presentation/list/view/task_list_page.dart';
 
-class MyApp extends StatefulWidget {
+class NiksamApp extends StatefulWidget {
   final TaskRepository? repository;
 
-  const MyApp({super.key, this.repository});
+  const NiksamApp({super.key, this.repository});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<NiksamApp> createState() => _NiksamAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _NiksamAppState extends State<NiksamApp> {
   late final TaskRepository _repo;
-  bool _ownsRepo = false;
+  late final bool _ownsRepo;
 
   @override
   void initState() {

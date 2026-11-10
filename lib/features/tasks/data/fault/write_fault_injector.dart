@@ -1,4 +1,4 @@
-import '../../../../core/config/app_config.dart';
+import 'package:niksam/core/config/app_config.dart';
 
 class InjectedWriteException implements Exception {
   final String message;

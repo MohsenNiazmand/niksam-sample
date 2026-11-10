@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/priority.dart';
-import '../../../domain/entities/task_query.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task_query.dart';
 
 sealed class TaskListEvent extends Equatable {
   const TaskListEvent();

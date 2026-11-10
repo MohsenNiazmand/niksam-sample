@@ -1,5 +1,5 @@
-import '../../domain/entities/priority.dart';
-import '../../domain/entities/task_event.dart';
+import 'package:niksam/features/tasks/domain/entities/priority.dart';
+import 'package:niksam/features/tasks/domain/entities/task_event.dart';
 
 abstract final class TaskEventModel {
   static TaskEvent fromMap(Map<String, Object?> map) {

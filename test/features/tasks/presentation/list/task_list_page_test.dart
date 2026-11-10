@@ -11,7 +11,7 @@ void main() {
   ) async {
     final fakeRepo = FakeTaskRepository();
 
-    await tester.pumpWidget(MyApp(repository: fakeRepo));
+    await tester.pumpWidget(NiksamApp(repository: fakeRepo));
     await tester.pumpAndSettle();
 
     expect(find.text('Niksam Tasks'), findsOneWidget);
@@ -35,7 +35,7 @@ void main() {
       ],
     );
 
-    await tester.pumpWidget(MyApp(repository: fakeRepo));
+    await tester.pumpWidget(NiksamApp(repository: fakeRepo));
     await tester.pumpAndSettle();
 
     // Search for non-existent task
