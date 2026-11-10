@@ -68,11 +68,11 @@ Items marked **[confirmed]** were reproduced with a throw-away probe test; **[by
 
 | ✔ | Phase | Fixes | Commits |
 |---|---|---|---|
-| [ ] | F1 Fault injector: per-operation attempts + tests | H1, M1 | 1 |
-| [ ] | F2 Repository & DB hardening | H4, H5, M2, M3, M4, M8 | 1 |
-| [ ] | F3 Presentation correctness | H2, H3, M5, M6, M7 | 1 |
-| [ ] | F4 Widget & regression tests | M9 | 1 |
-| [ ] | F5 Hygiene | L1, L2, L3 | 1 |
+| [x] | F1 Fault injector: per-operation attempts + tests | H1, M1 | 1 |
+| [x] | F2 Repository & DB hardening | H4, H5, M2, M3, M4, M8 | 1 |
+| [x] | F3 Presentation correctness | H2, H3, M5, M6, M7 | 1 |
+| [x] | F4 Widget & regression tests | M9 | 1 |
+| [x] | F5 Hygiene | L1, L2, L3 | 1 |
 | [ ] | F6 Run it for real (device) — **HUMAN-assisted** | D5 | 0–n |
 | [ ] | F7 Docs honesty & trimming — **HUMAN INPUT** | D1–D4 | 3 |
 | [ ] | F8 Final gate | — | 1 |
