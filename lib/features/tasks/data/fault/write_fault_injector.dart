@@ -9,7 +9,10 @@ class InjectedWriteException implements Exception {
 }
 
 abstract interface class WriteFaultInjector {
-  void beginWrite();
+  WriteAttempt beginWrite();
+}
+
+abstract interface class WriteAttempt {
   void checkpoint(String name);
 }
 
@@ -17,7 +20,11 @@ class NoFault implements WriteFaultInjector {
   const NoFault();
 
   @override
-  void beginWrite() {}
+  WriteAttempt beginWrite() => const _NoOpWriteAttempt();
+}
+
+class _NoOpWriteAttempt implements WriteAttempt {
+  const _NoOpWriteAttempt();
 
   @override
   void checkpoint(String name) {}
@@ -26,52 +33,49 @@ class NoFault implements WriteFaultInjector {
 class ConfiguredFault implements WriteFaultInjector {
   final bool failWrites;
   final int failFirstWrites;
-  int _writeCount = 0;
+  int _failuresLeft;
 
   ConfiguredFault({
     this.failWrites = AppConfig.failWrites,
     this.failFirstWrites = AppConfig.failFirstWrites,
-  });
+  }) : _failuresLeft = failFirstWrites;
 
   @override
-  void beginWrite() {
-    _writeCount++;
-  }
-
-  @override
-  void checkpoint(String name) {
-    if (failWrites) {
-      throw InjectedWriteException(
-        'Simulated write failure (FAIL_WRITES=true) at $name',
-      );
-    }
-    if (failFirstWrites > 0 && _writeCount <= failFirstWrites) {
-      throw InjectedWriteException(
-        'Simulated transient failure (write $_writeCount of $failFirstWrites) at $name',
-      );
-    }
+  WriteAttempt beginWrite() {
+    return _ConfiguredWriteAttempt(
+      failWrites: failWrites,
+      decrementFailure: () {
+        if (_failuresLeft > 0) {
+          _failuresLeft--;
+          return true;
+        }
+        return false;
+      },
+    );
   }
 }
 
-class TestFaultInjector implements WriteFaultInjector {
-  final Set<String> failAtCheckpoints;
-  bool failNextWrite;
-  int writeCount = 0;
+class _ConfiguredWriteAttempt implements WriteAttempt {
+  final bool failWrites;
+  final bool Function() decrementFailure;
+  bool? _shouldFail;
 
-  TestFaultInjector({
-    Set<String>? failAtCheckpoints,
-    this.failNextWrite = false,
-  }) : failAtCheckpoints = failAtCheckpoints ?? <String>{};
-
-  @override
-  void beginWrite() {
-    writeCount++;
-  }
+  _ConfiguredWriteAttempt({
+    required this.failWrites,
+    required this.decrementFailure,
+  });
 
   @override
   void checkpoint(String name) {
-    if (failNextWrite || failAtCheckpoints.contains(name)) {
-      throw InjectedWriteException('Test fault injected at checkpoint: $name');
+    if (_shouldFail == null) {
+      if (failWrites) {
+        _shouldFail = true;
+      } else {
+        _shouldFail = decrementFailure();
+      }
+    }
+    if (_shouldFail!) {
+      throw InjectedWriteException('Simulated write failure at $name');
     }
   }
 }

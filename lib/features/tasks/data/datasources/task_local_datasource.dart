@@ -76,7 +76,7 @@ class TaskLocalDataSource {
   }
 
   Future<Task> create(String id, TaskDraft draft, DateTime now) async {
-    faultInjector.beginWrite();
+    final attempt = faultInjector.beginWrite();
     final db = await database.database;
     final normalized = draft.normalized();
 
@@ -91,20 +91,20 @@ class TaskLocalDataSource {
 
     await db.transaction((txn) async {
       await txn.insert('tasks', TaskModel.toMap(task));
-      faultInjector.checkpoint('after_task_write');
+      attempt.checkpoint('after_task_write');
 
       await txn.insert(
         'task_events',
         TaskEventModel.toMap(taskId: id, at: now, kind: const TaskCreated()),
       );
-      faultInjector.checkpoint('before_commit');
+      attempt.checkpoint('before_commit');
     });
 
     return task;
   }
 
   Future<WriteOutcome> update(String id, TaskDraft draft, DateTime now) async {
-    faultInjector.beginWrite();
+    final attempt = faultInjector.beginWrite();
     final db = await database.database;
 
     return await db.transaction((txn) async {
@@ -131,7 +131,7 @@ class TaskLocalDataSource {
         where: 'id = ?',
         whereArgs: [id],
       );
-      faultInjector.checkpoint('after_task_write');
+      attempt.checkpoint('after_task_write');
 
       final events = TaskChangeDetector.eventsForUpdate(stored, draft);
       for (final eventKind in events) {
@@ -140,7 +140,7 @@ class TaskLocalDataSource {
           TaskEventModel.toMap(taskId: id, at: now, kind: eventKind),
         );
       }
-      faultInjector.checkpoint('before_commit');
+      attempt.checkpoint('before_commit');
 
       return Saved(updatedTask);
     });
@@ -151,7 +151,7 @@ class TaskLocalDataSource {
     bool completed,
     DateTime now,
   ) async {
-    faultInjector.beginWrite();
+    final attempt = faultInjector.beginWrite();
     final db = await database.database;
 
     return await db.transaction((txn) async {
@@ -176,20 +176,20 @@ class TaskLocalDataSource {
         where: 'id = ?',
         whereArgs: [id],
       );
-      faultInjector.checkpoint('after_task_write');
+      attempt.checkpoint('after_task_write');
 
       await txn.insert(
         'task_events',
         TaskEventModel.toMap(taskId: id, at: now, kind: eventKind),
       );
-      faultInjector.checkpoint('before_commit');
+      attempt.checkpoint('before_commit');
 
       return Saved(updatedTask);
     });
   }
 
   Future<void> delete(String id, DateTime now) async {
-    faultInjector.beginWrite();
+    final attempt = faultInjector.beginWrite();
     final db = await database.database;
 
     await db.transaction((txn) async {
@@ -199,8 +199,8 @@ class TaskLocalDataSource {
       }
 
       await txn.delete('tasks', where: 'id = ?', whereArgs: [id]);
-      faultInjector.checkpoint('after_task_write');
-      faultInjector.checkpoint('before_commit');
+      attempt.checkpoint('after_task_write');
+      attempt.checkpoint('before_commit');
     });
   }
 }

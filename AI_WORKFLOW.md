@@ -38,6 +38,10 @@
    - **What happened:** In `lib/features/tasks/presentation/list/view/widgets/filter_bar.dart`, imports referencing `domain/entities/` used 3 upward directory steps instead of 4.
    - **How it was caught:** Flagged by `flutter analyze` during Phase 6 verification.
    - **Fix:** Standardized on `package:niksam/features/...` imports across all UI widgets.
+4. **Shared Mutable State in Write Fault Injector & Test Double in Prod (Phase F1 / Review)**:
+   - **What happened:** `FAIL_FIRST_WRITES=N` used a shared mutable counter read at checkpoint time, causing race conditions in concurrent writes and consuming budget on no-op (`Unchanged`) writes. Also, `TestFaultInjector` lived in production `lib/`.
+   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H1 & M1).
+   - **Fix:** Made fault injection per-operation with lazy evaluation on first checkpoint, moved `TestFaultInjector` to `test/support/`, and added robust unit tests for `ConfiguredFault`.
 
 ---
 
@@ -61,3 +65,4 @@
 - **P6**: Wired presentation screens (`TaskListPage`, `TaskFormPage`, `TaskTimelineSheet`). Verified responsive rebuilds and widget smoke tests. Passed 51 tests.
 - **P7**: Added end-to-end integration tests combining real SQLite with BLoC. Verified rapid taps and fault recovery. Passed 53 tests.
 - **P8**: Produced full architectural design document (`DESIGN.md`), project guide (`README.md`), and finalized AI workflow log (`AI_WORKFLOW.md`).
+- **F1**: Made fault injection per-operation (`WriteAttempt`), moved `TestFaultInjector` to `test/support/`, and added `ConfiguredFault` unit tests. Passed 58 tests.

@@ -3,7 +3,7 @@ import 'package:niksam/core/error/failures.dart';
 import 'package:niksam/core/utils/result.dart';
 import 'package:niksam/features/tasks/data/database/app_database.dart';
 import 'package:niksam/features/tasks/data/datasources/task_local_datasource.dart';
-import 'package:niksam/features/tasks/data/fault/write_fault_injector.dart';
+import '../../../../support/test_fault_injector.dart';
 import 'package:niksam/features/tasks/data/repositories/task_repository_impl.dart';
 import 'package:niksam/features/tasks/domain/entities/priority.dart';
 import 'package:niksam/features/tasks/domain/entities/task.dart';
