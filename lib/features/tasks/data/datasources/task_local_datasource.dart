@@ -188,7 +188,7 @@ class TaskLocalDataSource {
     });
   }
 
-  Future<void> delete(String id, DateTime now) async {
+  Future<void> delete(String id) async {
     final attempt = faultInjector.beginWrite();
     final db = await database.database;
 
@@ -200,7 +200,6 @@ class TaskLocalDataSource {
 
       await txn.delete('tasks', where: 'id = ?', whereArgs: [id]);
       attempt.checkpoint('after_task_write');
-      attempt.checkpoint('before_commit');
     });
   }
 }

@@ -9,7 +9,8 @@ abstract final class TaskModel {
       description: (map['description'] as String?) ?? '',
       priority: Priority.values.firstWhere(
         (p) => p.name == map['priority'],
-        orElse: () => Priority.medium,
+        orElse: () =>
+            throw ArgumentError('Unknown priority: ${map['priority']}'),
       ),
       isCompleted: (map['is_completed'] as int) == 1,
       createdAt: DateTime.fromMillisecondsSinceEpoch(

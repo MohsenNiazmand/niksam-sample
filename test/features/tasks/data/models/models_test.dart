@@ -28,6 +28,19 @@ void main() {
       final recovered = TaskModel.fromMap(map);
       expect(recovered, equals(task));
     });
+
+    test('corrupt priority throws ArgumentError', () {
+      final map = {
+        'id': 'uuid-2',
+        'title': 'Corrupt priority',
+        'description': '',
+        'priority': 'unknown_priority',
+        'is_completed': 0,
+        'created_at': DateTime.now().millisecondsSinceEpoch,
+      };
+
+      expect(() => TaskModel.fromMap(map), throwsA(isA<ArgumentError>()));
+    });
   });
 
   group('TaskEventModel', () {

@@ -13,53 +13,53 @@ class AppDatabase {
     : migrations = migrations ?? kMigrations;
 
   Future<Database> get database {
-    _dbFuture ??= _open();
-    return _dbFuture!;
+    return _dbFuture ??= _open().catchError((Object e) {
+      _dbFuture = null;
+      throw e;
+    });
   }
 
   Future<Database> _open() async {
-    try {
-      final f = factory ?? databaseFactory;
-      final dbPath =
-          path ?? p.join(await f.getDatabasesPath(), 'niksam_tasks.db');
-      final version = migrations.length;
+    final f = factory ?? databaseFactory;
+    final dbPath =
+        path ?? p.join(await f.getDatabasesPath(), 'niksam_tasks.db');
+    final version = migrations.length;
 
-      final db = await f.openDatabase(
-        dbPath,
-        options: OpenDatabaseOptions(
-          version: version,
-          onConfigure: (db) async {
-            await db.execute('PRAGMA foreign_keys = ON');
-          },
-          onCreate: (db, version) async {
-            for (var i = 0; i < version; i++) {
-              await migrations[i](db);
-            }
-          },
-          onUpgrade: (db, oldVersion, newVersion) async {
-            for (var i = oldVersion; i < newVersion; i++) {
-              await migrations[i](db);
-            }
-          },
-          onDowngrade: (db, oldVersion, newVersion) async {
-            throw StateError(
-              'Downgrade from version $oldVersion to $newVersion is not allowed to prevent data loss.',
-            );
-          },
-        ),
-      );
-      return db;
-    } catch (e) {
-      _dbFuture = null;
-      rethrow;
-    }
+    final db = await f.openDatabase(
+      dbPath,
+      options: OpenDatabaseOptions(
+        version: version,
+        onConfigure: (db) async {
+          await db.execute('PRAGMA foreign_keys = ON');
+        },
+        onCreate: (db, version) async {
+          for (var i = 0; i < version; i++) {
+            await migrations[i](db);
+          }
+        },
+        onUpgrade: (db, oldVersion, newVersion) async {
+          for (var i = oldVersion; i < newVersion; i++) {
+            await migrations[i](db);
+          }
+        },
+        onDowngrade: (db, oldVersion, newVersion) async {
+          throw StateError(
+            'Downgrade from version $oldVersion to $newVersion is not allowed to prevent data loss.',
+          );
+        },
+      ),
+    );
+    return db;
   }
 
   Future<void> close() async {
-    if (_dbFuture != null) {
-      final db = await _dbFuture!;
-      await db.close();
-      _dbFuture = null;
+    final future = _dbFuture;
+    _dbFuture = null;
+    if (future != null) {
+      try {
+        final db = await future;
+        await db.close();
+      } catch (_) {}
     }
   }
 }

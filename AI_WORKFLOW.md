@@ -42,6 +42,10 @@
    - **What happened:** `FAIL_FIRST_WRITES=N` used a shared mutable counter read at checkpoint time, causing race conditions in concurrent writes and consuming budget on no-op (`Unchanged`) writes. Also, `TestFaultInjector` lived in production `lib/`.
    - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H1 & M1).
    - **Fix:** Made fault injection per-operation with lazy evaluation on first checkpoint, moved `TestFaultInjector` to `test/support/`, and added robust unit tests for `ConfiguredFault`.
+5. **Repository & Database Hardening (Phase F2 / Review)**:
+   - **What happened:** Raw exception text shown to users (H4); stream notification after close throwing error on successful write (H5); database open future permanently caching failed open (M2); unknown priority silently falling back to medium hiding data corruption (M3); local vs UTC date comparison mismatch (M4); unused delete parameter and redundant checkpoint (M8).
+   - **How it was caught:** Independent review pass (`REVIEW_FIXES.md` H4, H5, M2, M3, M4, M8).
+   - **Fix:** Added friendly error mapping with diagnostic logging, guarded notifications against closed streams, allowed retrying failed database open, threw `ArgumentError` on unknown priority, enforced UTC dates in repository, and cleaned up delete parameters/checkpoints.
 
 ---
 
@@ -66,3 +70,4 @@
 - **P7**: Added end-to-end integration tests combining real SQLite with BLoC. Verified rapid taps and fault recovery. Passed 53 tests.
 - **P8**: Produced full architectural design document (`DESIGN.md`), project guide (`README.md`), and finalized AI workflow log (`AI_WORKFLOW.md`).
 - **F1**: Made fault injection per-operation (`WriteAttempt`), moved `TestFaultInjector` to `test/support/`, and added `ConfiguredFault` unit tests. Passed 58 tests.
+- **F2**: Hardened repository error mapping and logging, guarded change notifications against closed streams, enabled database open retry, threw on corrupt priority, enforced UTC dates, and cleaned up delete method. Passed 59 tests.

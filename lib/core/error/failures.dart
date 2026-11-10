@@ -9,7 +9,8 @@ abstract class Failure extends Equatable {
 }
 
 class StorageFailure extends Failure {
-  const StorageFailure([super.message = 'Storage Error']);
+  final String? details;
+  const StorageFailure([super.message = 'Storage Error', this.details]);
 }
 
 class NotFoundFailure extends Failure {

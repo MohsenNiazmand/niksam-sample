@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/result.dart';
@@ -9,6 +10,7 @@ import '../../domain/entities/task_query.dart';
 import '../../domain/entities/write_outcome.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../datasources/task_local_datasource.dart';
+import '../fault/write_fault_injector.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource dataSource;
@@ -17,10 +19,16 @@ class TaskRepositoryImpl implements TaskRepository {
       StreamController<void>.broadcast();
 
   TaskRepositoryImpl({required this.dataSource, DateTime Function()? now})
-    : _now = now ?? DateTime.now;
+    : _now = (() => (now ?? DateTime.now)().toUtc());
 
   @override
   Stream<void> get changes => _changesController.stream;
+
+  void _notifyChanged() {
+    if (!_changesController.isClosed) {
+      _changesController.add(null);
+    }
+  }
 
   @override
   Future<Result<List<Task>>> getTasks(TaskQuery query) async {
@@ -28,7 +36,7 @@ class TaskRepositoryImpl implements TaskRepository {
       final tasks = await dataSource.getTasks(query);
       return Success(tasks);
     } catch (e) {
-      return _handleError(e);
+      return _handleReadError(e);
     }
   }
 
@@ -38,7 +46,7 @@ class TaskRepositoryImpl implements TaskRepository {
       final events = await dataSource.getTimeline(taskId);
       return Success(events);
     } catch (e) {
-      return _handleError(e);
+      return _handleReadError(e);
     }
   }
 
@@ -46,10 +54,10 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<Result<Task>> create(String id, TaskDraft draft) async {
     try {
       final task = await dataSource.create(id, draft, _now());
-      _changesController.add(null);
+      _notifyChanged();
       return Success(task);
     } catch (e) {
-      return _handleError(e);
+      return _handleWriteError(e);
     }
   }
 
@@ -58,11 +66,11 @@ class TaskRepositoryImpl implements TaskRepository {
     try {
       final outcome = await dataSource.update(id, draft, _now());
       if (outcome is Saved) {
-        _changesController.add(null);
+        _notifyChanged();
       }
       return Success(outcome);
     } catch (e) {
-      return _handleError(e);
+      return _handleWriteError(e);
     }
   }
 
@@ -71,35 +79,51 @@ class TaskRepositoryImpl implements TaskRepository {
     try {
       final outcome = await dataSource.setCompleted(id, completed, _now());
       if (outcome is Saved) {
-        _changesController.add(null);
+        _notifyChanged();
       }
       return Success(outcome);
     } catch (e) {
-      return _handleError(e);
+      return _handleWriteError(e);
     }
   }
 
   @override
   Future<Result<void>> delete(String id) async {
     try {
-      await dataSource.delete(id, _now());
-      _changesController.add(null);
+      await dataSource.delete(id);
+      _notifyChanged();
       return const Success(null);
     } catch (e) {
-      return _handleError(e);
+      return _handleWriteError(e);
     }
   }
 
   @override
   Future<void> dispose() async {
-    await _changesController.close();
+    if (!_changesController.isClosed) {
+      await _changesController.close();
+    }
     await dataSource.database.close();
   }
 
-  Result<T> _handleError<T>(Object error) {
+  Result<T> _handleReadError<T>(Object error) {
+    developer.log('Read error', error: error);
     if (error is NotFoundException) {
       return Failed(NotFoundFailure(error.message));
     }
-    return Failed(StorageFailure(error.toString()));
+    return Failed(
+      StorageFailure("Couldn't load your tasks.", error.toString()),
+    );
+  }
+
+  Result<T> _handleWriteError<T>(Object error) {
+    developer.log('Write error', error: error);
+    if (error is NotFoundException) {
+      return Failed(NotFoundFailure(error.message));
+    }
+    final msg = error is InjectedWriteException
+        ? 'Simulated write failure (FAIL_WRITES). Nothing was saved.'
+        : "Couldn't save the change. Nothing was modified — please retry.";
+    return Failed(StorageFailure(msg, error.toString()));
   }
 }
