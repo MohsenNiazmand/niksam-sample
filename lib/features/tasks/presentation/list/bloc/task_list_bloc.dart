@@ -139,8 +139,9 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
         final message = failure is NotFoundFailure
             ? 'Task no longer exists'
             : failure.message;
-        final TaskListEvent? retryEvent =
-            failure is NotFoundFailure ? null : event;
+        final TaskListEvent? retryEvent = failure is NotFoundFailure
+            ? null
+            : event;
         emit(
           state.copyWith(
             actionFailure: () => ActionFailure(

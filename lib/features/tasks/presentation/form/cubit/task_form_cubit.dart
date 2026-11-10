@@ -37,7 +37,9 @@ class TaskFormCubit extends Cubit<TaskFormState> {
       emit(
         state.copyWith(
           titleError: () => null,
-          status: state.status == FormStatus.failure ? FormStatus.editing : null,
+          status: state.status == FormStatus.failure
+              ? FormStatus.editing
+              : null,
         ),
       );
     }
@@ -83,7 +85,10 @@ class TaskFormCubit extends Cubit<TaskFormState> {
           );
       }
     } else {
-      final Result<WriteOutcome> result = await _repo.update(state.taskId, draft);
+      final Result<WriteOutcome> result = await _repo.update(
+        state.taskId,
+        draft,
+      );
       if (isClosed) return;
 
       switch (result) {

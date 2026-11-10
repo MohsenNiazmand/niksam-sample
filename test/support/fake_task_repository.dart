@@ -20,6 +20,8 @@ class FakeTaskRepository implements TaskRepository {
   List<TaskQuery> getTasksHistory = [];
   int activeMutations = 0;
   int maxConcurrentMutations = 0;
+  Result<Task>? nextCreateResult;
+  Result<WriteOutcome>? nextUpdateResult;
   Result<WriteOutcome>? nextSetCompletedResult;
   Result<void>? nextDeleteResult;
   Result<List<Task>>? nextGetTasksResult;
@@ -72,6 +74,12 @@ class FakeTaskRepository implements TaskRepository {
 
   @override
   Future<Result<Task>> create(String id, TaskDraft draft) async {
+    if (nextCreateResult != null) {
+      final res = nextCreateResult!;
+      nextCreateResult = null;
+      return res;
+    }
+
     final task = Task(
       id: id,
       title: draft.title,
@@ -87,6 +95,12 @@ class FakeTaskRepository implements TaskRepository {
 
   @override
   Future<Result<WriteOutcome>> update(String id, TaskDraft draft) async {
+    if (nextUpdateResult != null) {
+      final res = nextUpdateResult!;
+      nextUpdateResult = null;
+      return res;
+    }
+
     final index = storedTasks.indexWhere((t) => t.id == id);
     if (index == -1) {
       return const Failed(NotFoundFailure());
