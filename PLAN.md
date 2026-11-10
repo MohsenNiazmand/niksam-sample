@@ -105,7 +105,7 @@ Dependency rule: `presentation → domain ← data`. `domain` imports nothing fr
 | [x] | P0 Bootstrap, cleanup, deps, CLAUDE.md | 10 min | 2 commits |
 | [x] | P1 Domain + pure logic + tests | 12 min | 1 |
 | [x] | P2 SQLite schema, migrations, fault injector | 13 min | 1 |
-| [ ] | P3 Atomic repository + tests (riskiest) | 22 min | 1 |
+| [x] | P3 Atomic repository + tests (riskiest) | 22 min | 1 |
 | [ ] | P4 TaskListBloc + tests | 22 min | 1 |
 | [ ] | P5 Form + Timeline cubits + tests | 12 min | 1 |
 | [ ] | P6 UI wiring | 22 min | 1 |
